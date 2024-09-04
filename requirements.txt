@@ -7,3 +7,4 @@ os-sys
 glob2
 jugaad-data
 bsedata
+pymongo
