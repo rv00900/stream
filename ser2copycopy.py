@@ -31,56 +31,49 @@ b = BSE()
 b = BSE(update_codes = True)
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-
-
+import pandas as pd
 
 uri = "mongodb+srv://quantbox7:JpMF2wrNaTOLCMNj@cluster0.e0bj3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
+# Create a MongoDB client
 client = MongoClient(uri, server_api=ServerApi('1'))
 
-
 try:
+    # Ping the MongoDB server
     client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
+    
+    # Access the database and collections
+    db = client['d']
+    collection = db['f']
+    collection1 = db['tt6']
+    collection2 = db['all']
+
+    # Fetch data from collections
+    cursor = collection.find()
+    cursor1 = collection1.find()
+    cursor2 = collection2.find()
+
+    data_list = list(cursor)
+    data_list1 = list(cursor1)
+    data_list2 = list(cursor2)
+
+    # Create DataFrames
+    dfw = pd.DataFrame(data_list)
+    dfw1 = pd.DataFrame(data_list1)
+    dfw2 = pd.DataFrame(data_list2)
+
+    # Optionally, you can print DataFrames to verify the data
+    print(dfw.head())
+    print(dfw1.head())
+    print(dfw2.head())
+
 except Exception as e:
     print(f"An error occurred: {e}")
 
-import pandas as pd
-
-
-db = client['d']  
-collection = db['f'] 
-collection1 = db['tt6'] 
-collection2 = db['all']   
-
-
-cursor = collection.find()
-cursor1 = collection1.find()
-cursor2 = collection2.find()
-
-
-data_list = list(cursor)
-
-
-dfw= pd.DataFrame(data_list)
-
-
-data_list1 = list(cursor1)
-
-
-dfw1= pd.DataFrame(data_list1)
-
-data_list2 = list(cursor2)
-
-
-dfw2 = pd.DataFrame(data_list2)
-
-
-#print(df)
-
-# Close the MongoDB connection
-client.close()
-
+finally:
+    # Close the MongoDB connection
+    client.close()
 
 
 
